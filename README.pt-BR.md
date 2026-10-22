@@ -34,6 +34,24 @@ Essa é a máquina em que testei:
 | Proton | GE-Proton11-3 |
 | Controle | Xbox por USB |
 
+### Relatos da comunidade
+
+| | |
+|---|---|
+| Sistema | Ubuntu 26.04.1 LTS |
+| Kernel | 7.0.0-38-generic |
+| Ambiente | GNOME no Wayland |
+| CPU | Intel Xeon E5-2698 v4, 40 threads |
+| RAM | 30 GB |
+| GPU | NVIDIA RTX 3060, driver 595.99.02 |
+| Proton | GE-Proton11-3 |
+| Controle | Xbox Wireless Controller por Bluetooth |
+
+Relato de [@carlosdanielmirandadelima-blip](https://github.com/carlosdanielmirandadelima-blip): instalação concluída pelo script, jogo na versão 2.2.0, partidas jogadas em sessão Wayland sem nenhum ajuste. Dois detalhes deste relato:
+
+- O jogo só detecta controle na inicialização. Conecte o controle antes de abrir o jogo, senão ele fica mudo mesmo com o sistema já enxergando o aparelho.
+- O instalador usou `C:\Program Files (x86)\SP Football Life 2026` por padrão. Mover a pasta do jogo para `C:\Games\SPFL26` deixando um link simbólico no caminho antigo (o script liga os dois de qualquer jeito) manteve launcher e as duas updates tranquilos.
+
 Deve funcionar em qualquer distro com um driver Vulkan funcionando. Tudo é instalado dentro da sua pasta pessoal, então funciona também em sistemas imutáveis como Bazzite e SteamOS. Sem sudo em lugar nenhum.
 
 ## O que você precisa baixar
