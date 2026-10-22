@@ -147,6 +147,26 @@ check_multiarch() {
     fi
 }
 
+check_session() {
+    local session="${XDG_SESSION_TYPE:-unknown}"
+    if [[ "$session" == "wayland" ]]; then
+        warn "Wayland session detected. Proton runs the game through XWayland, that normally works."
+        warn "If the window misbehaves or fullscreen breaks, log out and pick the X11 session"
+        warn "('Ubuntu on Xorg') at the login screen."
+    else
+        ok "session: $session"
+    fi
+}
+
+check_extractors() {
+    if command -v unar >/dev/null 2>&1 || command -v 7z >/dev/null 2>&1 \
+        || command -v unrar >/dev/null 2>&1 || command -v bsdtar >/dev/null 2>&1; then
+        ok "an archive extractor is available"
+    else
+        warn "no unar, 7z, unrar or bsdtar found. You need one of them to unpack the split .rar download."
+    fi
+}
+
 find_steam_root() {
     local candidate
     for candidate in \
@@ -203,7 +223,19 @@ locate_sources() {
     PATCH_220=$(find "$SOURCE_DIR" -maxdepth 4 -iname 'SPFL26_220.exe' 2>/dev/null | head -1)
 
     if [[ "$SKIP_BASE" -eq 0 ]]; then
-        [[ -n "$SETUP_EXE" ]] && ok "base game: $SETUP_EXE" || { fail "SPFL26_setup.exe not found under $SOURCE_DIR"; return 1; }
+        if [[ -n "$SETUP_EXE" ]]; then
+            ok "base game: $SETUP_EXE"
+        else
+            fail "SPFL26_setup.exe not found under $SOURCE_DIR"
+            local parts
+            parts=$(find "$SOURCE_DIR" -maxdepth 4 -iname '*.part*.rar' 2>/dev/null | head -1)
+            if [[ -n "$parts" ]]; then
+                warn "found split archives ($(basename "$parts")) that were never extracted."
+                warn "Unpack them first with unar, 7z or WinRAR, then run this script again."
+                warn "The installer expects SPFL26_setup.exe, the Data folder and the .D01 file."
+            fi
+            return 1
+        fi
         local data_dir
         data_dir=$(dirname "$SETUP_EXE")/Data
         [[ -d "$data_dir" ]] && ok "Data folder found next to the setup" || warn "no Data folder next to the setup, the install may be incomplete"
@@ -227,6 +259,8 @@ discovery() {
     check_gpu
     check_vulkan   || failed=1
     check_multiarch
+    check_session
+    check_extractors
     check_steam
     check_existing_proton
     check_existing_install

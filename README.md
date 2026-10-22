@@ -36,6 +36,12 @@ Here is the machine I tested on:
 
 It should work on any distro with a working Vulkan driver. Everything installs inside your home folder, so it also works on immutable systems like Bazzite and SteamOS. No sudo anywhere.
 
+### Wayland
+
+Proton runs the game through XWayland, so it works on a Wayland session. If the window misbehaves or fullscreen breaks, log out and pick the X11 session (`Ubuntu on Xorg`) at the login screen.
+
+Do not reach for the Wine virtual desktop as a workaround, it breaks Vulkan and the game crashes instead of just misbehaving.
+
 ## What you need to download
 
 Get everything from the official SmokePatch page. Do not download it from random mirrors:
@@ -59,6 +65,16 @@ flatpak install flathub org.jdownloader.JDownloader
 ```
 
 Keep every part in the same folder. The installer needs the `Data` folder sitting next to `SPFL26_setup.exe`.
+
+### Unpack the parts first
+
+The base game arrives as split `.rar` archives (`SPFL26.part01.rar` and friends). Extract them before running the installer, otherwise there is no `SPFL26_setup.exe` for the script to find.
+
+```bash
+unar SPFL26.part01.rar        # or: 7z x SPFL26.part01.rar
+```
+
+Extract them into a single folder, so that `SPFL26_setup.exe`, the `Data` folder and the `.D01` file end up side by side.
 
 ## Quick install
 
@@ -90,6 +106,8 @@ The script checks your system first and tells you what is missing before it down
   [ ok ] GPU: NVIDIA Corporation AD104 [GeForce RTX 4070 Ti]
   [ ok ] Vulkan driver: 580.173.02
   [ ok ] i386 multiarch enabled (needed by the 32 bit installers)
+  [ ok ] session: x11
+  [ ok ] an archive extractor is available
   [ ok ] Steam data found at /home/user/.steam/root
   [ ok ] GE-Proton11-3 already installed
   [ ok ] patch 2.0: /home/user/Downloads/SPFL26_200/SPFL26_200.exe
